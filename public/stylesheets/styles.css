@@ -29152,7 +29152,7 @@ fieldset[disabled] .datepicker table tr td span.active.disabled:hover.active {
 }
 
 i.fa, i.ti, i.zmdi{
-  color: white;
+  color: #00B1DD;
 }
 
 
@@ -29221,36 +29221,15 @@ footer p{
   text-align: center;
 }
 
-@media (max-width: 900px) {
-  #nav {
-    width: 100%;
-    top: 60px;
+@media (max-width: 800px) {
+  h1.header{
+    display: none;
   }
-  #nav:before {
-    display: block;
-    position: absolute;
-    right: 3%;
-    top: -50px;
-    line-height: 40px;
-    font-size: 1.4em;
-    cursor: pointer;
-    color: #fff;
-  }
-  #nav ul {
-    background: #00B1DD;
-    width: 100%;
-    margin: 0px;
-  }
-  #nav ul li {
-    float: none;
-  }
-  #nav ul li a {
-    padding: 10px 3%;
-    line-height: 20px;
-    border-top: 1px solid #fff;
-  }
+}
 
-  #wrapper{
-    top:240px;
-  }
+.panel-top-margin{
+  margin-top: 100px;
+  padding-left: 50px;
+  padding-right: 50px;
+  margin-bottom: 10px;
 }

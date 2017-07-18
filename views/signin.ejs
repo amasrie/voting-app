@@ -1,0 +1,47 @@
+<% include header.ejs %>
+
+<div class="row panel-top-margin">
+	<div class="col-md-4 col-md-offset-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h2>Sign in</h2>
+			</div>
+			<div class="panel-body">
+				
+				<form action="" class="form-horizontal" id="validate-form">
+					<div class="form-group mb-md">
+                        <div class="col-xs-12">
+                        	<div class="input-group">							
+								<span class="input-group-addon">
+									<i class="ti ti-user"></i>
+								</span>
+								<input type="text" class="form-control" placeholder="Email" required>
+							</div>
+                        </div>
+					</div>
+
+					<div class="form-group mb-md">
+                        <div class="col-xs-12">
+                        	<div class="input-group">
+								<span class="input-group-addon">
+									<i class="ti ti-key"></i>
+								</span>
+								<input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+							</div>
+                        </div>
+					</div>
+
+				</form>
+			</div>
+			<div class="panel-footer">
+				<div class="clearfix">
+					<a href="extras-registration.html" class="btn btn-default pull-left">Clear</a>
+					<a href="extras-login.html" class="btn btn-primary pull-right">Sign in</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<% include footer.ejs %>
