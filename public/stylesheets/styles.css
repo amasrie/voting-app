@@ -20950,8 +20950,8 @@ body.sidebar-collapsed .sidebar nav.widget-body > ul.acc-menu li.hasChild:hover 
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
-  color: #212121;
-  background-color: #fafafa;
+  color: #E5E5E5;
+  background-color: #00B1DD;
 }
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover,
@@ -29186,10 +29186,6 @@ h1.header{
   color: #ffffff;
 }
 
-#topnav{
-  padding-bottom: 20px;
-}
-
 #nav ul li{
   margin: 10px;
 }
@@ -29221,15 +29217,39 @@ footer p{
   text-align: center;
 }
 
-@media (max-width: 800px) {
-  h1.header{
-    display: none;
-  }
-}
-
 .panel-top-margin{
   margin-top: 100px;
   padding-left: 50px;
   padding-right: 50px;
   margin-bottom: 10px;
+}
+
+.icon-header{
+  background-color: #ffffff !important;
+}
+
+.icon-header:hover{
+  background-color: #E5E5E5 !important;
+}
+
+.header-logo{
+  position: absolute !important;
+  margin-left: 10px;
+}
+
+.header-title{
+  margin-left: 55px;
+}
+
+h4{
+  color: #ffffff;
+}
+
+h4:hover{
+  color: #E5E5E5;
+}
+
+nav a{
+  padding-top: 0;
+  padding-bottom: 0;
 }

@@ -12,8 +12,8 @@
         <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,600' rel='stylesheet' type='text/css'>
         <link type="text/css" href="/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link type="text/css" href="/fonts/themify-icons/themify-icons.css" rel="stylesheet">               <!-- Themify Icons -->
-        <link type="text/css" href="/stylesheets/styles.css" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link type="text/css" href="/stylesheets/styles.css" rel="stylesheet">
         <link type="text/css" href="assets/plugins/codeprettifier/prettify.css" rel="stylesheet">                <!-- Code Prettifier -->
         <link type="text/css" href="assets/plugins/iCheck/skins/minimal/blue.css" rel="stylesheet">              <!-- iCheck -->
 
@@ -28,11 +28,11 @@
 
                 <a href="/">
                     <div class="row">
-                        <div class="col-sm-2">
+                        <div class="header-logo">
                             <img width="65" src="/images/vote_alt.png" class="logo-margins" width="200px" />
                         </div>
-                        <div class="col-sm-10">
-                            <h1 class="header">The Poll Center</h1>
+                        <div class="col-sm-12 header-title">
+                            <h1 class="header"><b>The Poll Center</b></h1>
                         </div>
                     </div>
 
@@ -41,6 +41,37 @@
             </div>
             <!-- logo-area -->
 
+            <nav class="navbar" role="navigation" id="headernav">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle icon-header" data-toggle="collapse" data-target="#horizontal-navbar">
+                        <i class="ti ti-menu"></i>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse large-icons-nav" id="horizontal-navbar">
+                    <ul class="nav navbar-nav smart-menu">
+                        <li>
+                            <a href="/"><h4>Find a Poll</h4></a>
+                        </li>
+                        <% if(true){ %>
+                            <li>
+                                <a href="/signin"><h4>Sign in</h4></a>
+                            </li>
+                            <li>
+                                <a href="/signup"><h4>Sign up</h4></a>
+                            </li>
+                        <% }else{ %>
+                            <li>
+                                <a href="#"><h4>My Polls</h4></a>
+                            </li>
+                            <li>
+                                <a href="#"><h4>Logout</h4></a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </nav>
+
+<!--
             <nav id="nav">
                 <ul>
                     <li>
@@ -63,6 +94,7 @@
                     <% } %>
                 </ul>
             </nav>
+-->            
         </header>
 
         <div id="wrapper">

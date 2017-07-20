@@ -27,6 +27,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var middleware = function(req, res, next){
+    if( ((req.path == "/signin" || req.path == "/signup") && req.session) || 
+        ((req.path == "/mypolls" || req.path == "/newpoll") && !req.session) ){
+            res.redirect("/");
+    }else{
+        next();
+    }
+}
+
+app.use(middleware);
+
 app.get('/', function(req, res){
     res.render('index');
 });
@@ -39,6 +50,17 @@ app.get('/signin', function(req, res){
     res.render('signin');
 });
 
+app.get('/mypolls', function(req, res){
+    res.render('mypolls');
+});
+
+app.get('/newpoll', function(req, res){
+    res.render('newpoll');
+});
+
+app.get('/vote/:poll_id', function(req, res){
+    res.render('vote');
+});
 
 app.get('*', function(req, res){
   res.redirect('/');
