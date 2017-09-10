@@ -29155,6 +29155,9 @@ i.fa, i.ti, i.zmdi{
   color: #00B1DD;
 }
 
+i.danger {
+  color: #DD191D;  
+}
 
 .info-tile.tile-dark-indigo .tile-icon i {
   color: #9FA2BC;

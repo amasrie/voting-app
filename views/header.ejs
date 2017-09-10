@@ -52,7 +52,7 @@
                         <li>
                             <a href="/"><h4>Find a Poll</h4></a>
                         </li>
-                        <% if(true){ %>
+                        <% if(typeof user.name == 'undefined' || !user.name){ %>
                             <li>
                                 <a href="/signin"><h4>Sign in</h4></a>
                             </li>
@@ -61,10 +61,10 @@
                             </li>
                         <% }else{ %>
                             <li>
-                                <a href="#"><h4>My Polls</h4></a>
+                                <a href="/mypolls"><h4>My Polls</h4></a>
                             </li>
                             <li>
-                                <a href="#"><h4>Logout</h4></a>
+                                <a href="/signout"><h4>Logout</h4></a>
                             </li>
                         <% } %>
                     </ul>

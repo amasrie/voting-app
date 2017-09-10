@@ -7,3 +7,11 @@
     }
 }
 */
+
+function reset(form){
+	document.getElementById(form).reset();
+}
+
+function submitForm(form){
+	document.getElementById(form).submit();	
+}
