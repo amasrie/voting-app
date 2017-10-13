@@ -2,7 +2,7 @@ module.exports = function(db){
 	var pollOptionSchema = db.Schema({
 		name: {type: String, required: true},
 		vote: {type: Number, default: 0},
-		poll: {type: db.Schema.Types.ObjectId, ref: 'Poll'}
+		poll: {type: db.Schema.Types.ObjectId, ref: 'Poll', required: true}
 	});
 
 	return db.model('PollOption', pollOptionSchema);

@@ -29155,6 +29155,10 @@ i.fa, i.ti, i.zmdi{
   color: #00B1DD;
 }
 
+i.ti.bl{
+  color: white;  
+}
+
 i.danger {
   color: #DD191D;  
 }
@@ -29255,4 +29259,13 @@ h4:hover{
 nav a{
   padding-top: 0;
   padding-bottom: 0;
+}
+
+.btn-margin{
+  margin-bottom: 10px
+}
+
+.btn-margin-side{
+  margin-left: 5px;
+  margin-right: 5px;
 }

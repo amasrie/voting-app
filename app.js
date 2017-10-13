@@ -45,9 +45,10 @@ app.use(
 );
 
 var middleware = function(req, res, next){
-    if( ((req.path == "/signin" || req.path == "/signup") && req.session.name) || 
-        ((req.path == "/mypolls" || req.path == "/newpoll") && !req.session.name) ){
-            res.redirect("/");
+    if( (req.path == "/signin" || req.path == "/signup") && req.session.name ){
+        res.redirect("/mypolls");
+    }else if((req.path == "/mypolls" || req.path == "/newpoll") && !req.session.name){
+        res.redirect("/signin");
     }else{
         next();
     }
@@ -162,12 +163,60 @@ app.get('/mypolls', function(req, res){
 });
 
 app.get('/newpoll', function(req, res){
-    res.render('newpoll', {user: req.session});
+    res.render('newpoll', {user: req.session, error: null});
 });
 
 app.post('/newpoll', function(req, res){
-    res.redirect('/mypolls');
+    //check that every field has text (including every extra option added)
+    var hasNull = false;
+    console.log(req.body);
+    for(var attr in req.body){
+        if(!req.body[attr]){
+            console.log("this is the nully "+ attr + " "+ req.body[attr])
+            hasNull = true;
+            break;
+        }
+    }
+    if(hasNull){
+        res.render('newpoll', {user: req.session, error: 'All fields must be filled'});
+    }else{
+        //create the poll
+        var createdPoll = new poll({
+            owner: req.session.email,
+            question: req.body.questionPoll
+        });
+        createdPoll.save(function(error, poll){
+            if(error){
+                console.log(error);
+                res.render('newpoll', {user: req.session, error: 'An error ocurred during the creation of the poll'});
+            }else{
+                //create each option
+                createOption(req, res, 1, poll._id);
+            }
+        });
+    }
 });
+
+var createOption = function(req, res, num, pollId){
+    if(!req.body["option"+num]){
+        //redirect to mypolls
+        res.redirect('/mypolls');
+    }else{
+        var createdOption = new option({
+            poll: pollId,
+            name: req.body["option"+num]
+        });
+        createdOption.save(function(error){
+            if(error){
+                console.log(error);
+                res.render('newpoll', {user: req.session, error: 'An error ocurred during the creation of the poll options'});
+            }else{
+                //create next option
+                createOption(req, res, num+1, pollId);
+            }
+        });        
+    }
+}
 
 app.get('/vote/:poll_id', function(req, res){
     res.render('vote', {user: req.session});

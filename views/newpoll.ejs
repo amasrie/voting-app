@@ -1,0 +1,69 @@
+<% include header.ejs %>
+
+<br />
+<div class="panel-body">
+
+	<% if(error){ %>
+		<div class="alert alert-dismissable alert-danger">
+			<i class="ti ti-alert danger"></i>&nbsp; <%= error %>
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		</div>
+	<% } %>	
+
+	<div class="alert alert-dismissable alert-info">
+		<i class="ti ti-info-alt"></i>&nbsp; Include a question and all the options you want to add (at least 2), then click the Create button to create your new poll.
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	</div>
+
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h2>New poll</h2>
+		</div>
+		<form id="pollForm" action="/newpoll" name="pollForm" method="post" class="form-horizontal">
+			<div class="panel-body">				
+
+				<div class="form-group mb-md">
+					<label for="questionPoll" class="col-xs-1 control-label">Question</label>
+                    <div class="col-xs-11">
+                    	<input maxlength="200" type="text" class="form-control" name="questionPoll" id="questionPoll" placeholder="Poll Question" required>
+                    </div>                   
+				</div>
+
+				<div class="form-group mb-md">
+					<label for="option1" class="col-xs-1 control-label">Option 1</label>
+                    <div class="col-xs-11">
+                    	<input maxlength="100" type="text" class="form-control" name="option1" id="option1" placeholder="Option 1" required>
+                    </div>
+				</div>
+
+				<div class="form-group mb-md">
+					<label for="option2" class="col-xs-1 control-label">Option 2</label>
+                    <div class="col-xs-11">
+                    	<input maxlength="100" type="text" class="form-control" name="option2" id="option2" placeholder="Option 2" required>
+                    </div>
+				</div>
+
+				<div id="extraOptions" name="extraOptions"></div>
+
+				<a href="#" onclick="addOption()" class="btn btn-primary pull-right btn-margin-side">Add another option</a>
+
+			</div>
+			<div class="panel-footer">
+				<div class="clearfix">
+					<a href="/mypolls" class="btn btn-danger pull-right btn-margin-side">Cancel</a>
+					<a href="#" onclick="reset('pollForm')" class="btn btn-default pull-right btn-margin-side">Clear Form</a>
+					<a href="#" onclick="submitForm('pollForm')" class="btn btn-primary pull-right btn-margin-side">Create</a>
+				</div>
+			</div>
+
+				
+		</form>				
+	</div>
+
+
+
+
+
+</div>
+
+<% include footer.ejs %>
