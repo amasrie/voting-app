@@ -57,8 +57,54 @@ var middleware = function(req, res, next){
 app.use(middleware);
 
 app.get('/', function(req, res){
-    res.render('index', {user: req.session});
+    //getting the list of created polls
+    poll.find({
+    }).exec(function(error, foundPolls){
+        if(error){
+            res.render('index', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
+        }else{
+            getPollOptions(0, foundPolls, [], res, req, true);
+        }
+    })
 });
+
+var getPollOptions = function(num, foundPolls, list, res, req, isIndex){
+    if(num < foundPolls.length){
+        option.find({poll: foundPolls[num]._id})
+        .exec(function(error, pollOptions){
+            if(error){
+                res.render('index', {user: req.session, polls: [], error: 'An error ocurred while trying to load a poll options'});
+            }else{
+                var json = {};
+                json.poll = foundPolls[num];
+                json.options = pollOptions;
+                var votes = 0;
+                var mostVoted;
+                var mostVotes = 0;
+                for(var i = 0; i < pollOptions.length; i++){
+                    if(pollOptions[i].vote > mostVotes){
+                        mostVotes = pollOptions[i].vote;
+                        mostVoted = pollOptions[i].name;
+                    }
+                    votes += pollOptions[i].vote;
+                }
+                if(!mostVotes){
+                    mostVoted = 'not defined yet';
+                }
+                json.vote = votes;
+                json.mostVoted = mostVoted;
+                list.push(json);
+                getPollOptions(num + 1, foundPolls, list, res, req, isIndex);
+            }
+        })
+    }else{
+        if(isIndex){
+            res.render('index', {user: req.session, polls: list, error: null});
+        }else{
+            res.render('mypolls', {user: req.session, polls: list, error: null});
+        }
+    }
+}
 
 app.get('/signup', function(req, res){
     res.render('signup', {user: req.session, error: null});
@@ -159,7 +205,15 @@ app.get('/signout', function(req,res,next){
 });
 
 app.get('/mypolls', function(req, res){
-    res.render('mypolls', {user: req.session});
+    //getting the list of user's created polls
+    poll.find({owner: req.session.email })
+    .exec(function(error, foundPolls){
+        if(error){
+            res.render('mypolls', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
+        }else{
+            getPollOptions(0, foundPolls, [], res, req, false);
+        }
+    })
 });
 
 app.get('/newpoll', function(req, res){
@@ -169,10 +223,8 @@ app.get('/newpoll', function(req, res){
 app.post('/newpoll', function(req, res){
     //check that every field has text (including every extra option added)
     var hasNull = false;
-    console.log(req.body);
     for(var attr in req.body){
         if(!req.body[attr]){
-            console.log("this is the nully "+ attr + " "+ req.body[attr])
             hasNull = true;
             break;
         }
@@ -220,6 +272,17 @@ var createOption = function(req, res, num, pollId){
 
 app.get('/vote/:poll_id', function(req, res){
     res.render('vote', {user: req.session});
+});
+
+app.get('/delete/:poll_id', function(req, res){
+    poll.remove({_id: req.params.poll_id}, function(err){
+        if(err){
+            console.log(err);
+            res.render('mypolls', {user: req.session, polls: [], error: 'An error ocurred while trying to delete a poll'});
+        }else{
+            res.redirect('/mypolls');
+        }
+    })
 });
 
 app.get('*', function(req, res){

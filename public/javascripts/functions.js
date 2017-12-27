@@ -47,3 +47,11 @@ function deleteOption(num){
 		anchor.setAttribute('onclick', 'deleteOption('+i+')');
 	}
 }
+
+
+function setTitleDelete(id, name){
+	var title = document.getElementById("modalDeleteTitle");
+	title.innerText = "The poll with the following title will be deleted: \n" + name;
+	var button = document.getElementById("deletePollButton");
+	button.setAttribute("href", "/delete/"+id);
+}
