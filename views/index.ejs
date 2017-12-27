@@ -26,7 +26,7 @@
 					<div class="panel-heading">
 						<h2><%= polls[i].poll.question %></h2>
 						<div class="panel-ctrls">
-							<a href="#" title="Share" class="button-icon"><i class="ti ti-share bl"></i></a>
+							<a onclick="setShare('<%= polls[i].poll._id %>')" data-toggle="modal" href="#copyModal" title="Share" class="button-icon"><i class="ti ti-share bl"></i></a>
 							<a href="#" title="Vote" class="button-icon"><i class="ti ti-check-box bl"></i></a>
 						</div>
 
@@ -47,4 +47,5 @@
 
 </div>
 
+<% include copy.ejs %>
 <% include footer.ejs %>

@@ -48,10 +48,16 @@ function deleteOption(num){
 	}
 }
 
-
+//set the title for the modal and the poll id for the button when is clicked
 function setTitleDelete(id, name){
 	var title = document.getElementById("modalDeleteTitle");
 	title.innerText = "The poll with the following title will be deleted: \n" + name;
 	var button = document.getElementById("deletePollButton");
 	button.setAttribute("href", "/delete/"+id);
+}
+
+//set the link of the selected poll when the share button is clicked
+function setShare(id){
+	var input = document.getElementById("inputShare");
+	input.value = window.location.origin+"/vote/"+id
 }
