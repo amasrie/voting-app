@@ -32,7 +32,7 @@
 
 					</div>
 					<div class="panel-body" style="height: 148px">
-						<p>This poll was created on <%= polls[i].poll.date %>.</p>
+						<p>This poll was created on <%= polls[i].dateFormat %>.</p>
 						<p>A total of <%= polls[i].vote %> people has voted on this poll.</p>
 						<p>So far, the most voted option is <%= polls[i].mostVoted %>.</p>
 					</div>
@@ -43,6 +43,60 @@
 			</div>
 		<% } %>
 
+	</div>
+
+	<div class="tab-pane active bottom center" id="dompaginate">
+		<ul class="pagination">
+			<li 
+			<% if(current == 0){ %>
+				class="disabled"
+			<% } %>
+			><a 
+			<% if(current == 0){ %>
+				href="#"
+			<% }else{ %>
+				href="/polls"
+			<% } %>
+			><i class="fa fa-angle-left"></i><i class="fa fa-angle-left"></i></a></li>
+
+			<li
+			<% if(current == 0){ %>
+				class="disabled"
+			<% } %>
+			><a 
+			<% if(current == 0){ %>
+				href="#"
+			<% }else{ %>
+				href="/polls?page=<%= parseInt(current) - 1 %>"
+			<% } %>
+			><i class="fa fa-angle-left"></i></a></li>
+
+			<li class="active"><a href="#"><%= parseInt(current) + 1 %></a></li>
+
+			<li
+			<% if(current == last){ %>
+				class="disabled"
+			<% } %>
+			><a 
+			<% if(current == last){ %>
+				href="#"
+			<% }else{ %>
+				href="/polls?page=<%= parseInt(current) + 1 %>"
+			<% } %>
+			><i class="fa fa-angle-right"></i></a></li>
+
+			<li
+			<% if(current == last){ %>
+				class="disabled"
+			<% } %>
+			><a 
+			<% if(current == last){ %>
+				href="#"
+			<% }else{ %>
+				href="/polls?page=<%= last %>"
+			<% } %>
+			><i class="fa fa-angle-right"></i><i class="fa fa-angle-right"></i></a></li>
+		</ul>
 	</div>
 
 </div>

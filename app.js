@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var md5 = require('md5');
+var moment = require('moment');
 require('dotenv').load();
 
 var app = express();
@@ -57,18 +58,33 @@ var middleware = function(req, res, next){
 app.use(middleware);
 
 app.get('/', function(req, res){
+    res.redirect('/polls');
+});
+
+app.get('/polls', function(req, res){
+    var numberPage = req.query.page ? req.query.page : 0;
     //getting the list of created polls
-    poll.find({
-    }).exec(function(error, foundPolls){
+    poll.find({})
+    .sort({date: -1})
+    .skip(numberPage * 4)
+    .limit(4)
+    .exec(function(error, foundPolls){
         if(error){
             res.render('index', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
         }else{
-            getPollOptions(0, foundPolls, [], res, req, true);
+            poll.count({})
+            .exec(function(error, count){
+                if(error){
+                    res.render('index', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
+                }else{
+                    getPollOptions(0, foundPolls, [], res, req, true, numberPage, count);
+                }                
+            })
         }
-    })
+    })    
 });
 
-var getPollOptions = function(num, foundPolls, list, res, req, isIndex){
+var getPollOptions = function(num, foundPolls, list, res, req, isIndex, current, count){
     if(num < foundPolls.length){
         option.find({poll: foundPolls[num]._id})
         .exec(function(error, pollOptions){
@@ -93,15 +109,17 @@ var getPollOptions = function(num, foundPolls, list, res, req, isIndex){
                 }
                 json.vote = votes;
                 json.mostVoted = mostVoted;
+                json.dateFormat = moment(json.poll.date).format('LL');
+                console.log(json)
                 list.push(json);
-                getPollOptions(num + 1, foundPolls, list, res, req, isIndex);
+                getPollOptions(num + 1, foundPolls, list, res, req, isIndex, current, count);
             }
         })
     }else{
         if(isIndex){
-            res.render('index', {user: req.session, polls: list, error: null});
+            res.render('index', {user: req.session, polls: list, error: null, current: current, last: Math.floor(count / 4)});
         }else{
-            res.render('mypolls', {user: req.session, polls: list, error: null});
+            res.render('mypolls', {user: req.session, polls: list, error: null, current: current, last: Math.floor(count / 4)});
         }
     }
 }
@@ -185,7 +203,7 @@ app.post('/signin', function(req, res){
                         res.render('signin', {user: req.session, error: 'Could\'nt sign in. Please try again later'});
                     }else{
                         //redirect to mypolls
-                        res.redirect('/mypolls');                        
+                        res.redirect('/mypolls');
                     }
                 })
             }
@@ -200,18 +218,29 @@ app.get('/signout', function(req,res,next){
         if (err) {
             console.log("error: ", err);
         }
-        res.redirect('/');
+        res.redirect('/polls');
     });
 });
 
 app.get('/mypolls', function(req, res){
+    var numberPage = req.query.page ? req.query.page : 0;
     //getting the list of user's created polls
-    poll.find({owner: req.session.email })
+    poll.find({owner: req.session.email})
+    .sort({date: -1})
+    .skip(numberPage * 4)
+    .limit(4)
     .exec(function(error, foundPolls){
         if(error){
             res.render('mypolls', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
         }else{
-            getPollOptions(0, foundPolls, [], res, req, false);
+            poll.count({owner: req.session.email})
+            .exec(function(error, count){
+                if(error){
+                    res.render('index', {user: req.session, polls: [], error: 'An error ocurred while trying to load the polls'});
+                }else{
+                    getPollOptions(0, foundPolls, [], res, req, false, numberPage, count);
+                }                
+            })
         }
     })
 });
@@ -286,7 +315,7 @@ app.get('/delete/:poll_id', function(req, res){
 });
 
 app.get('*', function(req, res){
-  res.redirect('/');
+  res.redirect('/polls');
 });
 
 app.listen(process.env.PORT, function () {
