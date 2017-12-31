@@ -27,7 +27,7 @@
 						<h2><%= polls[i].poll.question %></h2>
 						<div class="panel-ctrls">
 							<a onclick="setShare('<%= polls[i].poll._id %>')" data-toggle="modal" href="#copyModal" title="Share" class="button-icon"><i class="ti ti-share bl"></i></a>
-							<a href="#" title="Vote" class="button-icon"><i class="ti ti-check-box bl"></i></a>
+							<a href="/vote/<%= polls[i].poll._id %>" title="Vote" class="button-icon"><i class="ti ti-check-box bl"></i></a>
 							<a data-toggle="modal" href="#myModal" title="Delete" onclick="setTitleDelete('<%= polls[i].poll._id %>', '<%= polls[i].poll.question %>')" class="button-icon"><i class="ti ti-trash bl"></i></a>
 						</div>
 

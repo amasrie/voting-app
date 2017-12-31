@@ -101,6 +101,8 @@ var getPollOptions = function(num, foundPolls, list, res, req, isIndex, current,
                     if(pollOptions[i].vote > mostVotes){
                         mostVotes = pollOptions[i].vote;
                         mostVoted = pollOptions[i].name;
+                    }else if(pollOptions[i].vote > 0 && pollOptions[i].vote == mostVotes){
+                        mostVoted = 'needing a tiebreak';
                     }
                     votes += pollOptions[i].vote;
                 }
@@ -110,7 +112,6 @@ var getPollOptions = function(num, foundPolls, list, res, req, isIndex, current,
                 json.vote = votes;
                 json.mostVoted = mostVoted;
                 json.dateFormat = moment(json.poll.date).format('LL');
-                console.log(json)
                 list.push(json);
                 getPollOptions(num + 1, foundPolls, list, res, req, isIndex, current, count);
             }
@@ -300,8 +301,79 @@ var createOption = function(req, res, num, pollId){
 }
 
 app.get('/vote/:poll_id', function(req, res){
-    res.render('vote', {user: req.session});
+    getPollInfo(req, res, req.params.poll_id, null);
 });
+
+app.post('/vote/:poll_id', function(req, res){
+    if(req.body.selectOption == 'Choose'){
+        getPollInfo(req, res, req.params.poll_id, "An option must be selected.");
+    }else{
+        //get user identificator
+        var userId = req.session.email ? req.session.email : req.ip;
+        //creating the vote instance
+        var createdVote = new vote({
+            user: userId,
+            poll: req.params.poll_id
+        });
+        createdVote.save(function(error, vote){
+            if(error){
+                console.log(error);
+                getPollInfo(req, res, req.params.poll_id, 'An error ocurred while trying to save your vote. Please try again.');
+            }else{
+                //adding the vote to the option
+                option.update({_id: req.body.selectOption}, {$inc: {vote: 1} },
+                    function(err, response){
+                        if(err){
+                            console.log(err);
+                            getPollInfo(req, res, req.params.poll_id, 'An error ocurred while trying to add your vote.');
+                        }else{
+                            //go back to the voting page
+                            getPollInfo(req, res, req.params.poll_id, null);
+                        }
+                    });
+            }
+        });
+
+    }
+});
+
+var getPollInfo = function(req, res, pollId, errMsg){
+    var userId = req.session.email ? req.session.email : req.ip;
+    //find the poll
+    poll.find({_id: pollId})
+    .exec(function(error, foundPoll){
+        if(error){
+            res.render('vote', {user: req.session, userVoted: true, poll: {pollQuestion: null} ,error: 'An error ocurred while trying to load the poll'});
+        }else{
+            var json = {pollQuestion: foundPoll[0]};
+            json.dateFormat = moment(json.pollQuestion.date).format('LL');
+            json.vote = 0;
+            //get the poll options
+            option.find({poll: json.pollQuestion._id})
+            .exec(function(error, pollOptions){
+                if(error){
+                    console.log(error)
+                    res.render('vote', {user: req.session, userVoted: true, poll: {pollQuestion: null} ,error: 'An error ocurred while trying to load the poll options'});
+                }else{
+                    json.pollOptions = pollOptions;
+                    for(var i = 0; i < pollOptions.length; i++){
+                        json.vote += pollOptions[i].vote;
+                    }
+                    //check if the user already voted
+                    vote.find({user: userId, poll: pollId}, function(err, found){
+                        if(error){
+                            console.log(error)
+                            res.render('vote', {user: req.session, userVoted: true, poll: {pollQuestion: null} ,error: 'An error ocurred while trying to determine if the user has already voted in this poll'});
+                        }else{
+                            console.log("found ", found)
+                            res.render('vote', {user: req.session, userVoted: found.length > 0 ,poll: json, error: errMsg});
+                        }
+                    })
+                }
+            });
+        }
+    })
+}
 
 app.get('/delete/:poll_id', function(req, res){
     poll.remove({_id: req.params.poll_id}, function(err){

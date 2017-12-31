@@ -1,0 +1,135 @@
+<% include header.ejs %>
+
+<br />
+<div class="panel-body">
+
+	<% if(error){ %>
+		<div class="alert alert-dismissable alert-danger">
+			<i class="ti ti-alert danger"></i>&nbsp; <%= error %>
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		</div>
+	<% } %>	
+
+	<div class="alert alert-dismissable alert-info">
+		<i class="ti ti-info-alt"></i>&nbsp; Choose carefully the option of your preference and then click the Vote button. Once the vote is saved, you can't turn back.
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	</div>
+
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h2>
+				<% if(poll.pollQuestion){ %>
+					<%= poll.pollQuestion.question %>
+				<% }else{ %>
+					Not found
+				<% } %>
+			</h2>
+		</div>
+		<form id="voteForm" action="/vote/
+			<% if(poll.pollQuestion){ %>
+				<%- poll.pollQuestion._id %>
+			<% }else{ %>
+				null
+			<% } %>
+		" name="voteForm" method="post" class="form-horizontal">
+			<div class="panel-body">				
+
+				<div class="form-group margin-select">
+
+					<select class="form-control" id="selectOption" name="selectOption">
+
+						<option value="Choose" >Choose an option</option>
+
+						<% if(poll.pollOptions){ %>
+
+							<% for(var i = 0; i < poll.pollOptions.length; i++){ %>
+
+								<option value="<%= poll.pollOptions[i]._id %>" ><%= poll.pollOptions[i].name %></option>
+
+							<% } %>
+
+						<% } %>
+
+					</select>
+
+					<br />
+
+					<div class="flot-container">
+						<div id="flot-placeholder"></div>
+					</div>
+					
+					<div class="center">
+						<p>This poll was created on <%= poll.dateFormat %> by <%= user.email %>.</p>
+						<p>A total of <%= poll.vote %> people has voted on this poll.</p>
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="panel-footer">
+				<div class="clearfix">
+					<% if(!userVoted){ %>
+						<a href="/polls" class="btn btn-danger pull-right btn-margin-side">Cancel</a>
+						<a href="#" onclick="reset('voteForm')" class="btn btn-default pull-right btn-margin-side">Clear</a>
+						<a href="#" onclick="submitForm('voteForm')" class="btn btn-primary pull-right btn-margin-side">Vote</a>
+					<% } else if(userVoted){ %>
+						<h5>You have already voted in this poll.</h5>
+					<% } %>
+				</div>
+			</div>
+
+				
+		</form>				
+	</div>
+
+</div>
+
+<% include footer.ejs %>
+
+<script>
+
+var pollOpt = <%- JSON.stringify(poll) %>.pollOptions;
+var dataSet = [];
+
+for(var i = 0;  i < pollOpt.length; i++){
+	dataSet.push({
+		label: pollOpt[i].name,
+		data: pollOpt[i].vote
+	})
+
+}
+
+var options = {
+    series: {
+        pie: {
+            show: true,
+            label: {
+                show: true,
+                formatter: function (label, series) {
+                    return '<div style="font-size:12pt;text-align:center;padding:5px;color:white;">' +
+                    label + ' : ' +
+                    Math.round(series.percent) +
+                    '%</div>';
+                },
+                background: {
+                    opacity: 0.8,
+                    color: '#000'
+                }
+            }
+        }
+    },
+    legend: {
+        show: false
+    },
+    grid: {
+        hoverable: true
+    }
+};
+
+$(document).ready(function () {
+    $.plot($("#flot-placeholder"), dataSet, options);
+});
+
+</script>
+
