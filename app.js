@@ -9,7 +9,7 @@ var session = require('express-session');
 var mongoStore = require('connect-mongo')(session);
 var md5 = require('md5');
 var moment = require('moment');
-require('dotenv').load();
+//require('dotenv').load();
 
 var app = express();
 
